@@ -2,9 +2,795 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jintian Shangguan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400&family=Instrument+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --near-black: #322D27;
+            --dark-brown: #2a2520;
+            --rich-brown: #3a342e;
+            --teal: #047C58;
+            --teal-light: #05a070;
+            --khaki: #7F7265;
+            --gold: #BF8440;
+            --warm-gray: #E2E1EB;
+            --mid-gray: #AAAAAE;
+            --off-white: #f4f3f7;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Instrument Sans', sans-serif;
+            background: var(--off-white);
+            color: var(--near-black);
+            overflow-x: hidden;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 3rem;
+            background: var(--near-black);
+            border-bottom: 1px solid rgba(226,225,235,0.06);
+        }
+
+        .nav-logo {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.15em;
+            color: var(--warm-gray);
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--khaki);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--warm-gray); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: var(--near-black);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: end;
+            padding: 8rem 3rem 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            right: 0; top: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--dark-brown);
+            opacity: 0.4;
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+        }
+
+        .hero-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 2rem;
+        }
+
+        .hero-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(3.5rem, 7vw, 6.5rem);
+            line-height: 1.0;
+            color: var(--warm-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-name-chinese {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: var(--khaki);
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.15em;
+        }
+
+        .hero-bio {
+            font-size: 1rem;
+            line-height: 1.75;
+            color: rgba(226, 225, 235, 0.65);
+            max-width: 480px;
+            margin-bottom: 3rem;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 0.4rem 0.9rem;
+            border: 1px solid rgba(127, 114, 101, 0.4);
+            color: var(--khaki);
+            border-radius: 2px;
+        }
+
+        .hero-scroll {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1.5rem;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 80px;
+            background: linear-gradient(to bottom, var(--teal), transparent);
+            margin-left: auto;
+        }
+
+        .scroll-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--khaki);
+            writing-mode: vertical-rl;
+        }
+
+        /* SECTION SHARED */
+        section {
+            padding: 6rem 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .section-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--teal);
+            letter-spacing: 0.1em;
+        }
+
+        .section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            color: var(--near-black);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: var(--warm-gray);
+            margin-bottom: 4px;
+        }
+
+        /* ABOUT */
+        .about {
+            background: var(--white);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 5rem;
+            align-items: start;
+        }
+
+        .about-text p {
+            font-size: 1.05rem;
+            line-height: 1.85;
+            color: #3a342e;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .detail-block {
+            border-left: 2px solid var(--teal);
+            padding-left: 1.25rem;
+        }
+
+        .detail-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--khaki);
+            margin-bottom: 0.35rem;
+        }
+
+        .detail-value {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--near-black);
+        }
+
+        /* PROJECTS */
+        .projects {
+            background: var(--off-white);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5px;
+            background: var(--warm-gray);
+            border: 1.5px solid var(--warm-gray);
+        }
+
+        .project-card {
+            background: var(--white);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            transition: background 0.25s;
+            cursor: default;
+            min-height: 300px;
+        }
+
+        .project-card:hover {
+            background: var(--near-black);
+        }
+
+        .project-card:hover .project-title { color: var(--warm-gray); }
+        .project-card:hover .project-desc { color: rgba(229,227,228,0.6); }
+        .project-card:hover .project-tech { color: var(--teal); border-color: rgba(4,124,88,0.4); }
+        .project-card:hover .project-num { color: rgba(127,114,101,0.4); }
+        .project-card:hover .project-link { color: var(--teal); }
+
+        .project-num {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: var(--warm-gray);
+            transition: color 0.25s;
+        }
+
+        .project-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--near-black);
+            transition: color 0.25s;
+        }
+
+        .project-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #5a5540;
+            flex: 1;
+            transition: color 0.25s;
+        }
+
+        .project-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .project-techs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        .project-tech {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--khaki);
+            border: 1px solid var(--warm-gray);
+            padding: 0.2rem 0.5rem;
+            border-radius: 2px;
+            transition: color 0.25s, border-color 0.25s;
+        }
+
+        .project-link {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--khaki);
+            text-decoration: none;
+            letter-spacing: 0.08em;
+            transition: color 0.25s;
+        }
+
+        .project-link::after { content: ' →'; }
+
+        /* EXTRACURRICULARS */
+        .extracurriculars {
+            background: var(--dark-brown);
+        }
+
+        .extracurriculars .section-title { color: var(--warm-gray); }
+        .extracurriculars .section-number { color: var(--teal); }
+        .extracurriculars .section-line { background: rgba(226,225,235,0.15); }
+
+        .extras-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .extra-item {
+            display: grid;
+            grid-template-columns: 60px 1fr auto;
+            gap: 2rem;
+            align-items: start;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgba(226,225,235,0.1);
+            position: relative;
+        }
+
+        .extra-item::before {
+            content: '';
+            position: absolute;
+            left: 0; bottom: -1px;
+            width: 0;
+            height: 1px;
+            background: var(--teal);
+            transition: width 0.4s ease;
+        }
+
+        .extra-item:hover::before { width: 100%; }
+
+        .extra-year {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--teal);
+            letter-spacing: 0.1em;
+            padding-top: 0.25rem;
+        }
+
+        .extra-content {}
+
+        .extra-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--warm-gray);
+            margin-bottom: 0.4rem;
+        }
+
+        .extra-org {
+            font-size: 0.85rem;
+            color: var(--khaki);
+            margin-bottom: 0.75rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.08em;
+        }
+
+        .extra-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: rgba(226,225,235,0.55);
+            max-width: 560px;
+        }
+
+        .extra-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.7rem;
+            border-radius: 2px;
+            white-space: nowrap;
+            align-self: flex-start;
+        }
+
+        .badge-teal {
+            background: rgba(4,124,88,0.2);
+            color: #05c98a;
+            border: 1px solid rgba(4,124,88,0.35);
+        }
+
+        .badge-khaki {
+            background: rgba(191,132,64,0.15);
+            color: var(--gold);
+            border: 1px solid rgba(191,132,64,0.3);
+        }
+
+        /* CONTACT / FOOTER */
+        footer {
+            background: var(--near-black);
+            padding: 5rem 3rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: end;
+            gap: 3rem;
+        }
+
+        .footer-cta-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 1rem;
+        }
+
+        .footer-cta-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: var(--warm-gray);
+            margin-bottom: 2rem;
+            line-height: 1.1;
+        }
+
+        .footer-email {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--teal);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(4,124,88,0.4);
+            padding-bottom: 2px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .footer-email:hover {
+            color: #05c98a;
+            border-color: #05c98a;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+
+        .footer-link {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--khaki);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover { color: var(--warm-gray); }
+
+        .footer-bottom {
+            grid-column: 1 / -1;
+            border-top: 1px solid rgba(226,225,235,0.08);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copy {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: rgba(127,114,101,0.5);
+            letter-spacing: 0.08em;
+        }
+
+        .footer-name-zh {
+            font-family: 'DM Serif Display', serif;
+            font-size: 0.9rem;
+            color: rgba(127,114,101,0.4);
+            letter-spacing: 0.2em;
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-label { animation: fadeUp 0.6s ease 0.2s both; }
+        .hero-name { animation: fadeUp 0.6s ease 0.35s both; }
+        .hero-name-chinese { animation: fadeUp 0.6s ease 0.45s both; }
+        .hero-bio { animation: fadeUp 0.6s ease 0.55s both; }
+        .hero-tags { animation: fadeUp 0.6s ease 0.65s both; }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            nav { padding: 1.25rem 1.5rem; }
+            .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; }
+            .hero-scroll { display: none; }
+            .hero::before { width: 100%; clip-path: none; opacity: 0.15; }
+            section { padding: 4rem 1.5rem; }
+            .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .extra-item { grid-template-columns: 1fr; gap: 0.75rem; }
+            footer { grid-template-columns: 1fr; padding: 4rem 1.5rem 2rem; }
+            .footer-links { align-items: flex-start; flex-direction: row; flex-wrap: wrap; }
+        }
+    </style>
 </head>
 <body>
+
+<!-- NAV -->
+<nav>
+    <span class="nav-logo">JS / 上官锦天</span>
+    <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#extracurriculars">Activities</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-text">
+        <p class="hero-label">Domestic Student</p>
+        <h1 class="hero-name">Jintian<br>Shangguan</h1>
+        <p class="hero-name-chinese">上官锦天</p>
+        <p class="hero-bio">Domestic undergraduate student pursuing a passion for ideas within of technology, coding, and development. Currently studying at The University of Melbourne.</p>
+        <div class="hero-tags">
+            <span class="tag">Coding</span>
+            <span class="tag">Full Stack</span>
+            <span class="tag">Technology</span>
+            <span class="tag">Open to opportunities</span>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <span class="scroll-label">Scroll to explore</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+    <div class="section-header">
+        <span class="section-number">00 —</span>
+        <h2 class="section-title">About me</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+        <div class="about-text">
+            <p> Hi, I am a student in The University of Melbourne's class of 2028, Majoring in computing and software sysytems. I have been dabbling in competitive programming since primary school, and began studing computer science in my sophomore year of high school. I am comfortable in Python, Visual Basic, MySql and PostgreSql.</p>
+            <p> Aside from studing, I often find myself within various student managed and operated clubs, frequently envisioning and facilitating workshops. in the infrequent moments wherein I am free, I also love to explore Melbourne, play basketball and going to the gym.</p>
+        </div>
+        <div class="about-details">
+            <div class="detail-block">
+                <p class="detail-label">University</p>
+                <p class="detail-value">The University of Melbourne</p>
+            </div>
+            <div class="detail-block">
+                <p class="detail-label">Degree</p>
+                <p class="detail-value">Bachelor of Science</p>
+            </div>
+            <div class="detail-block">
+                <p class="detail-label">Major</p>
+                <p class="detail-value">Computing and Software Systems</p>
+            </div>
+            <div class="detail-block">
+                <p class="detail-label">Expected graduation</p>
+                <p class="detail-value">2028</p>
+            </div>
+            <div class="detail-block">
+                <p class="detail-label">Languages</p>
+                <p class="detail-value">English, Mandarin Chinese (linguistically), Computers</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+    <div class="section-header">
+        <span class="section-number">01 —</span>
+        <h2 class="section-title">Projects</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="projects-grid">
+
+        <div class="project-card">
+            <span class="project-num">001</span>
+            <h3 class="project-title">Click and Claw Hackathon</h3>
+            <p class="project-desc">Ideated, developed and published a polished and working game within 48 hours. Worked primarily with GDscript, implemented a framework of skeleton code that supported efficient additions of new game scenes.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">GDScript</span>
+                    <span class="project-tech">End-to-End</span>
+                </div>
+                <a class="project-link" href="#">View</a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <span class="project-num">002</span>
+            <h3 class="project-title">CodeBrew Hackathon</h3>
+            <p class="project-desc">An independent research project examining placeholder phenomena across a sample population. Presented findings at a departmental symposium and received faculty commendation.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">R</span>
+                    <span class="project-tech">LaTeX</span>
+                </div>
+                <a class="project-link" href="#">Read</a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <span class="project-num">003</span>
+            <h3 class="project-title">Collaborative Tool</h3>
+            <p class="project-desc">Developed a lightweight web tool with two teammates to streamline a repetitive workflow common among students in our faculty. Currently used by 50+ peers.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">TypeScript</span>
+                    <span class="project-tech">Node</span>
+                </div>
+                <a class="project-link" href="#">GitHub</a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <span class="project-num">004</span>
+            <h3 class="project-title">Design Sprint</h3>
+            <p class="project-desc">Led a 48-hour design sprint to prototype a solution for a real-world problem posed by a local nonprofit. The prototype was adopted for further development post-event.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">Figma</span>
+                    <span class="project-tech">HTML/CSS</span>
+                </div>
+                <a class="project-link" href="#">Case study</a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <span class="project-num">005</span>
+            <h3 class="project-title">Data Pipeline</h3>
+            <p class="project-desc">Built an automated pipeline to aggregate and visualise publicly available data for a class project, earning top marks and praise for clarity of presentation.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">Python</span>
+                    <span class="project-tech">SQL</span>
+                </div>
+                <a class="project-link" href="#">Demo</a>
+            </div>
+        </div>
+
+        <div class="project-card">
+            <span class="project-num">006</span>
+            <h3 class="project-title">Personal Blog</h3>
+            <p class="project-desc">A writing outlet covering topics in technology, culture, and student life. Maintained consistently throughout university with a small but loyal readership.</p>
+            <div class="project-footer">
+                <div class="project-techs">
+                    <span class="project-tech">Next.js</span>
+                    <span class="project-tech">MDX</span>
+                </div>
+                <a class="project-link" href="#">Read</a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- EXTRACURRICULARS -->
+<section class="extracurriculars" id="extracurriculars">
+    <div class="section-header">
+        <span class="section-number">02 —</span>
+        <h2 class="section-title">Activities</h2>
+        <div class="section-line"></div>
+    </div>
+    <div class="extras-list">
+
+        <div class="extra-item">
+            <span class="extra-year">20XX–</span>
+            <div class="extra-content">
+                <h3 class="extra-title">President, Placeholder Student Society</h3>
+                <p class="extra-org">University Student Union</p>
+                <p class="extra-desc">Oversee a society of 120+ members, coordinating events, managing budgets, and setting strategic direction for the year's programming.</p>
+            </div>
+            <span class="extra-badge badge-teal">Leadership</span>
+        </div>
+
+        <div class="extra-item">
+            <span class="extra-year">20XX–</span>
+            <div class="extra-content">
+                <h3 class="extra-title">Staff Writer, Campus Publication</h3>
+                <p class="extra-org">The Placeholder Review</p>
+                <p class="extra-desc">Contributing long-form pieces on student affairs, technology, and culture. Edited by a faculty advisor and distributed across campus weekly.</p>
+            </div>
+            <span class="extra-badge badge-khaki">Writing</span>
+        </div>
+
+        <div class="extra-item">
+            <span class="extra-year">20XX</span>
+            <div class="extra-content">
+                <h3 class="extra-title">Delegate, Model United Nations</h3>
+                <p class="extra-org">National Conference, Placeholder City</p>
+                <p class="extra-desc">Represented a country in committee discussions on international placeholder policy. Awarded Best Delegate in the Placeholder Affairs committee.</p>
+            </div>
+            <span class="extra-badge badge-teal">Award</span>
+        </div>
+
+        <div class="extra-item">
+            <span class="extra-year">20XX–</span>
+            <div class="extra-content">
+                <h3 class="extra-title">Volunteer Tutor</h3>
+                <p class="extra-org">Community Learning Initiative</p>
+                <p class="extra-desc">Weekly tutoring sessions for secondary school students in mathematics and science. Part of a university-wide outreach programme connecting students with local schools.</p>
+            </div>
+            <span class="extra-badge badge-khaki">Community</span>
+        </div>
+
+        <div class="extra-item">
+            <span class="extra-year">20XX</span>
+            <div class="extra-content">
+                <h3 class="extra-title">Hackathon Finalist</h3>
+                <p class="extra-org">Placeholder University Hack 20XX</p>
+                <p class="extra-desc">Reached the final round of a 200-participant hackathon, presenting a prototype addressing a sustainability challenge set by the event's industry partner.</p>
+            </div>
+            <span class="extra-badge badge-teal">Competition</span>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER / CONTACT -->
+<footer id="contact">
+    <div>
+        <p class="footer-cta-label">Get in touch</p>
+        <h2 class="footer-cta-title">Let's work<br>together.</h2>
+        <a class="footer-email" href="mailto:jintian@placeholder.edu">jintian@placeholder.edu</a>
+    </div>
+    <div class="footer-links">
+        <a class="footer-link" href="#">LinkedIn</a>
+        <a class="footer-link" href="#">GitHub</a>
+        <a class="footer-link" href="#">CV / Résumé</a>
+        <a class="footer-link" href="#">Twitter / X</a>
+    </div>
+    <div class="footer-bottom">
+        <span class="footer-copy">© 2025 Jintian Shangguan. All rights reserved.</span>
+        <span class="footer-name-zh">上官锦天</span>
+    </div>
+</footer>
 
 </body>
 </html>
